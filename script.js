@@ -78,6 +78,13 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
 };
+const calcBalanceDisplay = function (movements) {
+  const balance = movements.reduce(function (acc, mov) {
+    return acc + mov;
+  }, 0);
+
+  labelBalance.textContent = `${balance}EUR`;
+};
 
 displayMovements(account1.movements);
 
@@ -92,6 +99,8 @@ const createUsernames = function (accs) {
 };
 
 createUsernames(accounts);
+
+calcBalanceDisplay(account1.movements);
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
