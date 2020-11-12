@@ -86,8 +86,6 @@ const calcBalanceDisplay = function (movements) {
   labelBalance.textContent = `${balance} €`;
 };
 
-displayMovements(account1.movements);
-
 const createUsernames = function (accs) {
   const username = accs.forEach(function (account) {
     account.username = account.owner
@@ -100,20 +98,18 @@ const createUsernames = function (accs) {
 
 createUsernames(accounts);
 
-calcBalanceDisplay(account1.movements);
-
-const calcDisplaySummary = function (movements) {
-  const totalDeposit = movements
+const calcDisplaySummary = function (acc) {
+  const totalDeposit = acc.movements
     .filter((mov) => mov > 0)
     .reduce((acc, cur) => acc + cur);
 
   const totalWithdrawal = Math.abs(
-    movements.filter((mov) => mov < 0).reduce((acc, cur) => acc + cur)
+    acc.movements.filter((mov) => mov < 0).reduce((acc, cur) => acc + cur)
   );
-  const interestRate = 1.5;
-  const totalInterest = movements
+
+  const totalInterest = acc.movements
     .filter((mov) => mov > 0)
-    .map((mov) => (mov * interestRate) / 100)
+    .map((mov) => (mov * acc.interestRate) / 100)
     .reduce((acc, cur) => acc + cur);
 
   labelSumInterest.textContent = `${totalInterest} €`;
@@ -121,7 +117,27 @@ const calcDisplaySummary = function (movements) {
   labelSumOut.textContent = `${totalWithdrawal} €`;
 };
 
-calcDisplaySummary(account1.movements);
+let currentAccount;
+btnLogin.addEventListener("click", function (e) {
+  e.preventDefault();
+  currentAccount = accounts.find(
+    (acc) => acc.username === inputLoginUsername.value
+  );
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(" ")[0]
+    }`;
+  }
+  containerApp.style.opacity = 100;
+
+  inputLoginUsername.value = inputLoginPin.value = "";
+  inputLoginPin.blur();
+
+  displayMovements(currentAccount.movements);
+  calcBalanceDisplay(currentAccount.movements);
+  calcDisplaySummary(currentAccount);
+});
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
