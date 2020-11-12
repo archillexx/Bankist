@@ -110,7 +110,13 @@ const calcDisplaySummary = function (movements) {
   const totalWithdrawal = Math.abs(
     movements.filter((mov) => mov < 0).reduce((acc, cur) => acc + cur)
   );
+  const interestRate = 1.5;
+  const totalInterest = movements
+    .filter((mov) => mov > 0)
+    .map((mov) => (mov * interestRate) / 100)
+    .reduce((acc, cur) => acc + cur);
 
+  labelSumInterest.textContent = `${totalInterest} €`;
   labelSumIn.textContent = `${totalDeposit} €`;
   labelSumOut.textContent = `${totalWithdrawal} €`;
 };
