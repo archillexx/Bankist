@@ -78,12 +78,12 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
 };
-const calcBalanceDisplay = function (movements) {
-  const balance = movements.reduce(function (acc, mov) {
+const calcBalanceDisplay = function (acc) {
+  acc.balance = acc.movements.reduce(function (acc, mov) {
     return acc + mov;
   }, 0);
 
-  labelBalance.textContent = `${balance} €`;
+  labelBalance.textContent = `${acc.balance} €`;
 };
 
 const createUsernames = function (accs) {
@@ -133,12 +133,34 @@ btnLogin.addEventListener("click", function (e) {
 
   inputLoginUsername.value = inputLoginPin.value = "";
   inputLoginPin.blur();
-
-  displayMovements(currentAccount.movements);
-  calcBalanceDisplay(currentAccount.movements);
-  calcDisplaySummary(currentAccount);
+  updateUI(currentAccount);
 });
 
+btnTransfer.addEventListener("click", function (e) {
+  e.preventDefault();
+  const receiverAccount = accounts.find(
+    (acc) => acc.username === inputTransferTo.value
+  );
+  const transferAmount = Number(inputTransferAmount.value);
+  inputTransferAmount.value = inputTransferTo.value = "";
+  if (
+    transferAmount > 0 &&
+    receiverAccount &&
+    currentAccount.balance > transferAmount &&
+    receiverAccount?.username !== currentAccount.username
+  ) {
+    currentAccount.movements.push(-transferAmount);
+    receiverAccount.movements.push(transferAmount);
+  }
+
+  updateUI(currentAccount);
+});
+
+const updateUI = function (account) {
+  displayMovements(account.movements);
+  calcBalanceDisplay(account);
+  calcDisplaySummary(account);
+};
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
