@@ -156,6 +156,25 @@ btnTransfer.addEventListener("click", function (e) {
   updateUI(currentAccount);
 });
 
+btnClose.addEventListener("click", function (e) {
+  e.preventDefault();
+  if (
+    currentAccount.username === inputCloseUsername.value &&
+    currentAccount.pin === Number(inputClosePin.value)
+  ) {
+    const index = accounts.findIndex(
+      (acc) => acc.username === currentAccount.username
+    );
+    console.log(index);
+    accounts.splice(index, 1);
+    labelWelcome.textContent = "Login in to get started";
+
+    containerApp.style.opacity = 0;
+  }
+
+  inputCloseUsername.value = inputClosePin.value = "";
+});
+
 const updateUI = function (account) {
   displayMovements(account.movements);
   calcBalanceDisplay(account);
